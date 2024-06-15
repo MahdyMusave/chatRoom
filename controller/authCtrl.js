@@ -78,10 +78,13 @@ const login = async (req, res) => {
     };
     const token = getGenerateToken(tokenData);
 
-    // const cookieOption = {
-    //   httpOnly: true,
-    //   secure: true,
-    // };
+    const addTokenUser = await User.findByIdAndUpdate(
+      user._id,
+      {
+        token: token,
+      },
+      { new: true }
+    );
 
     res
       .cookie("token", token, {
@@ -93,6 +96,7 @@ const login = async (req, res) => {
         message: "Login successfully",
         token: token,
         status: "success",
+        data: addTokenUser,
       });
   } catch (error) {
     res.status(500).json({
@@ -102,7 +106,44 @@ const login = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  const cookie = req.cookies;
+
+  if (!cookie?.token)
+    return res.status(400).json({
+      message: "No refresh token in cookie",
+    });
+
+  try {
+    const cookieOptions = {
+      http: true,
+      secure: true,
+    };
+
+    const user = await User.findOne({
+      token: cookie.token,
+    });
+    // return console.log(user);
+    if (!user)
+      return res.clearCookie("token", cookieOptions).status(204).json({
+        message: "User not found",
+        status: "error",
+      });
+
+    return res.clearCookie("token", "", cookieOptions).status(200).json({
+      message: "session out",
+      status: "success",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message || error,
+      status: "error",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
+  logout,
 };
