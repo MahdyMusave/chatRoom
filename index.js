@@ -5,7 +5,9 @@ const cookieParser = require("cookie-parser");
 dotenv.config();
 const mongoose = require("mongoose");
 const cors = require("cors");
+const dbConnect = require("./config/db");
 const app = express();
+dbConnect();
 const port = process.env.PORT || 3000;
 
 app.use(
