@@ -6,7 +6,9 @@ dotenv.config();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dbConnect = require("./config/db");
+const indexRouter = require("./router/indexRouter");
 const app = express();
+
 dbConnect();
 const port = process.env.PORT || 3000;
 
@@ -17,16 +19,12 @@ app.use(
     credentials: true,
   })
 );
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
-// app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(morgan("dev"));
 
-app.get("/", async (req, res) => {
-  return res.json({
-    data: "hello mahdy",
-  });
-});
+app.use("/", indexRouter);
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
