@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import { RiCloseFill } from "react-icons/ri";
 const Register = () => {
   const [data, setData] = useState({
     firstName: "",
@@ -97,7 +97,10 @@ const Register = () => {
                   className="h-14 bg-slate-200 flex justify-center items-center border cursor-pointer
                  hover:border mt-1"
                 >
-                  <p>{photo.name ? photo?.name : "upload profile photo"}</p>
+                  <p>
+                    {photo.name ? photo?.name : "upload profile photo"}
+                    <RiCloseFill />
+                  </p>
                 </div>
                 {
                   <input
