@@ -1,11 +1,8 @@
 import React from "react";
 import "./App.css";
+import { Outlet } from "react-router-dom";
 const App = () => {
-  return (
-    <>
-      <h1 className="text-3xl font-bold underline text-center">Hello world!</h1>
-    </>
-  );
+  return <Outlet />;
 };
 
 export default App;
