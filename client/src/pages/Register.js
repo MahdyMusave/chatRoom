@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { RiCloseFill } from "react-icons/ri";
+import { Link } from "react-router-dom";
+import uploadFile from "../uploadFile/uploadFile";
 const Register = () => {
   const [data, setData] = useState({
     firstName: "",
@@ -24,20 +26,39 @@ const Register = () => {
     });
   };
 
-  const handUpload = (e) => {
+  const handUpload = async (e) => {
     const file = e.target.files[0];
+    const uploadPhoto = await uploadFile(file);
+    // console.log("uploadPhoto", uploadPhoto);
     setPhoto(file);
+    setData((prev) => {
+      return {
+        ...prev,
+        profile_pic: uploadPhoto?.url,
+      };
+    });
   };
 
   console.log("photo", photo);
+  const handleClearUploadPhoto = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    setPhoto(null);
+  };
+  const handlerSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("data", data);
+  };
+
   return (
-    <div className="mt-4    ">
+    <div className="mt-4  ">
       <div
-        className="bg-white w-full max-w-lg  mx-2 rounded
+        className="bg-white w-full max-w-lg  mx-2 rounded mx-auto 
        overflow-hidden p-4 px-8"
       >
         <h1>Welcome to Chat app</h1>
-        <form onSubmit={""} className="grid gap-4 mt-5">
+        <form onSubmit={handlerSubmit} className="grid gap-4 mt-5">
           {/* Add form fields for registration */}
           <div className=" flex flex-col gap-1">
             <label htmlFor="firstName">FirstName :</label>
@@ -97,10 +118,15 @@ const Register = () => {
                   className="h-14 bg-slate-200 flex justify-center items-center border cursor-pointer
                  hover:border mt-1"
                 >
-                  <p>
-                    {photo.name ? photo?.name : "upload profile photo"}
-                    <RiCloseFill />
+                  <p className=" text-sm max-w-[300px] text-ellipsis line-clamp-1">
+                    {photo?.name ? photo?.name : "upload profile photo"}
                   </p>
+                  <button
+                    className="text-lg ml-2 hover:text-red-600"
+                    onClick={handleClearUploadPhoto}
+                  >
+                    {photo?.name && <RiCloseFill />}
+                  </button>
                 </div>
                 {
                   <input
@@ -109,15 +135,28 @@ const Register = () => {
                     id="profile_pic"
                     className="bg-slate-100 px-2 py-2 focus:outline-primary hidden"
                     onChange={handUpload}
-                    required
                   />
                 }
               </label>
             </div>
           </div>
 
-          <input type="submit" value="Register " />
+          <button
+            className="bg-primary text-lg px-4 py-1 hover:bg-teal-600 text-zinc-50 font-bold text-2xl py-2 tracking-wide leading-relaxed 
+           rounded-lg mt-3"
+          >
+            Register
+          </button>
         </form>
+        <p className="mt-2">
+          Already have account ?{" "}
+          <Link
+            to={"/email"}
+            className="hover:text-primary text-sm font-semibold "
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );
