@@ -36,15 +36,18 @@ const Home = () => {
 
   return (
     <>
-      <div className="grid grid-cols-[380px,1fr] h-screen max-h-screen border border-red-500">
-        <div className={`bg-white ${!basePath && "hidden"} lg-block`}>
+      <div className="grid lg:grid-cols-[380px,1fr] h-screen max-h-screen border border-red-500">
+        <div className={`bg-white ${!basePath && "hidden"} lg:block`}>
           <Sidebar />
         </div>
 
         <section className={`${basePath && "hidden"}`}>
           <Outlet />
         </section>
-        <div className="flex justify-center items-center flex-col gap-2">
+        <div
+          className={`justify-center items-center flex-col gap-2 
+          hidden ${!basePath ? "hidden" : "lg:flex"}`}
+        >
           <div className="">
             <img src="./images/homepage_2.png" alt="log_img" />
           </div>
