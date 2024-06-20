@@ -2,6 +2,7 @@ const { getGenerateToken } = require("../middleware/authmiddleware");
 const User = require("../model/userModel");
 const bcrypt = require("bcrypt");
 const register = async (req, res) => {
+  // return console.log(req.body);
   try {
     const { firstName, lastName, email, password, profile_pic } = req.body;
 
@@ -89,8 +90,8 @@ const login = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        // maxAge: 72 * 60 * 60 * 1000,
-        maxAge: "2d",
+        maxAge: 72 * 60 * 60 * 1000,
+        // maxAge: "2d",
       })
       .status(200)
       .json({

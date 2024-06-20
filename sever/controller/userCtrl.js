@@ -19,19 +19,17 @@ const userDetails = async (req, res) => {
 };
 const updateUserDetails = async (req, res) => {
   try {
-    console.log(req.cookies);
     const token = req.cookies.token || "";
-    // return console.log(token);
     const user = await getUserDetailsFormToken(token);
-    // return console.log(user);
-    const { firstName, profile_pic } = req.body;
-    const updateUser = await User.updateOne(
-      {
-        _id: user._id,
-      },
+
+    const { firstName, lastName, profile_pic } = req.body;
+    const updateUser = await User.findByIdAndUpdate(
+      user._id,
+
       {
         $set: {
           firstName,
+          lastName,
           profile_pic,
         },
       },
@@ -90,6 +88,26 @@ const deleteUser = async (req, res) => {
   //   });
   // }
 };
+const searchUser = async (req, res) => {
+  try {
+    const { search } = req.query;
+    const query = new RegExp(search, "i", "g");
+
+    const user = await User.find({
+      $or: [{ firstName: query }, { email: query }],
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: user,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "you can not search people",
+      status: "error",
+    });
+  }
+};
 module.exports = {
   userDetails,
   updateUserDetails,
@@ -97,4 +115,5 @@ module.exports = {
   getUsers,
   updateUser,
   deleteUser,
+  searchUser,
 };

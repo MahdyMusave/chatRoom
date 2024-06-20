@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { RiCloseFill } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import uploadFile from "../uploadFile/uploadFile";
+import toast from "react-hot-toast";
+import axios from "axios";
 const Register = () => {
   const [data, setData] = useState({
     firstName: "",
@@ -12,6 +14,8 @@ const Register = () => {
   });
 
   const [photo, setPhoto] = useState("");
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     // console.log(e.target);
@@ -39,15 +43,40 @@ const Register = () => {
     });
   };
 
-  console.log("photo", photo);
+  // console.log("photo", photo);
   const handleClearUploadPhoto = (e) => {
     e.stopPropagation();
     e.preventDefault();
     setPhoto(null);
   };
-  const handlerSubmit = (e) => {
+  const handlerSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    const URL = `${process.env.REACT_APP_BACKEND_URL}/auth/register`;
+
+    try {
+      const response = await axios.post(URL, data);
+      toast.success(response.data.message);
+      // console.log("response", response.data.status === "success");
+
+      if (
+        response.data.status === "success" &&
+        (response.data.status === "success") === true
+      ) {
+        setData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          profile_pic: "",
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+      // console.log("error", error.response.data.message);
+    }
     console.log("data", data);
   };
 
@@ -133,7 +162,7 @@ const Register = () => {
                     type="file"
                     name="profile_pic"
                     id="profile_pic"
-                    className="bg-slate-100 px-2 py-2 focus:outline-primary hidden"
+                    className="bg-slate-100 px-2 py-2 focus:outline-primary "
                     onChange={handUpload}
                   />
                 }
@@ -151,7 +180,7 @@ const Register = () => {
         <p className="mt-2">
           Already have account ?{" "}
           <Link
-            to={"/email"}
+            to={"/login"}
             className="hover:text-primary text-sm font-semibold "
           >
             Login
